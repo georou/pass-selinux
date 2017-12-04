@@ -2,9 +2,11 @@
 
 This policy is designed to work on Fedora (possibly RHEL) to confine pass. Since it concerns passwords, use at your own risk.
 
+**This branch is unconventional by design. It uses private types to isolate the password database files away from all other programs on the system. This has a side effect of needing extra policy definitions and added maintenance**
+
 The primary goals of this policy module is:
 * Deny network access to the program
-* Isolate the password file (.password-store) from other programs on the system (only on the private-type branch) 
+* Isolate the password file (.password-store) from other programs on the system with private types. It is the only way I am able to achieve this, however I am always open to suggestions.
 
 
 ### Current state:
