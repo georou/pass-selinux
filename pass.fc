@@ -1,0 +1,3 @@
+HOME_DIR/\.password-store(/.*)?		gen_context(system_u:object_r:pass_db_t,s0)
+
+/usr/bin/pass			--	gen_context(system_u:object_r:pass_exec_t,s0)

@@ -1,0 +1,158 @@
+
+## <summary>policy for pass</summary>
+
+########################################
+## <summary>
+##	Execute pass_exec_t in the pass domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`pass_domtrans',`
+	gen_require(`
+		type pass_t, pass_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, pass_exec_t, pass_t)
+')
+
+######################################
+## <summary>
+##	Execute pass in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`pass_exec',`
+	gen_require(`
+		type pass_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	can_exec($1, pass_exec_t)
+')
+
+########################################
+## <summary>
+##	Execute pass in the pass domain, and
+##	allow the specified role the pass domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	The role to be allowed the pass domain.
+##	</summary>
+## </param>
+#
+interface(`pass_run',`
+	gen_require(`
+		type pass_t;
+		attribute_role pass_roles;
+	')
+
+	pass_domtrans($1)
+	roleattribute $2 pass_roles;
+')
+
+########################################
+## <summary>
+##	Role access for pass
+## </summary>
+## <param name="role">
+##	<summary>
+##	Role allowed access
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	User domain for the role
+##	</summary>
+## </param>
+#
+interface(`pass_role',`
+	gen_require(`
+		type pass_t;
+		attribute_role pass_roles;
+	')
+
+	roleattribute $1 pass_roles;
+
+	pass_domtrans($2)
+
+	ps_process_pattern($2, pass_t)
+	allow $2 pass_t:process { signull signal sigkill };
+')
+
+########################################
+## <summary>
+##	Allow the specified domain to read
+##	password db files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`pass_read_db',`
+	gen_require(`
+		type pass_db_t;
+	')
+
+	manage_dirs_pattern($1, pass_db_t, pass_db_t)
+	manage_files_pattern($1, pass_db_t, pass_db_t)
+')
+
+########################################
+## <summary>
+##	Allow the specified domain to read
+##	password tmp files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`pass_read_tmp',`
+	gen_require(`
+		type pass_tmp_t;
+	')
+
+	manage_dirs_pattern($1, pass_tmp_t, pass_tmp_t)
+	manage_files_pattern($1, pass_tmp_t, pass_tmp_t)
+')
+
+########################################
+## <summary>
+##	Allow the specified domain to read
+##	password tmpfs files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`pass_read_tmpfs',`
+	gen_require(`
+		type pass_tmpfs_t;
+	')
+
+	manage_dirs_pattern($1, pass_tmpfs_t, pass_tmpfs_t)
+	manage_files_pattern($1, pass_tmpfs_t, pass_tmpfs_t)
+')

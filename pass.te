@@ -1,0 +1,100 @@
+policy_module(pass, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+#permissive pass_t;
+
+gen_require(`
+	type gpg_pinentry_t;
+	type staff_gkeyringd_t;
+	type unconfined_t;
+	role unconfined_r;
+')
+
+attribute_role pass_roles;
+roleattribute system_r pass_roles;
+
+type pass_t;
+type pass_exec_t;
+userdom_user_application_domain(pass_t, pass_exec_t)
+role pass_roles types pass_t;
+
+type pass_db_t;
+userdom_user_home_content(pass_db_t)
+
+type pass_tmp_t;
+userdom_user_tmp_file(pass_tmp_t)
+
+type pass_tmpfs_t;
+userdom_user_tmpfs_file(pass_tmpfs_t)
+
+
+########################################
+#
+# pass local policy
+#
+
+pass_read_db(gpg_t)
+pass_read_tmp(gpg_t)
+pass_read_tmpfs(gpg_t)
+
+manage_dirs_pattern(pass_t, pass_db_t, pass_db_t)
+manage_files_pattern(pass_t, pass_db_t, pass_db_t)
+userdom_user_home_dir_filetrans(pass_t, pass_db_t, { dir file })
+
+manage_dirs_pattern(pass_t, pass_tmp_t, pass_tmp_t)
+manage_files_pattern(pass_t, pass_tmp_t, pass_tmp_t)
+files_tmp_filetrans(pass_t, pass_tmp_t, { dir file })
+
+manage_dirs_pattern(pass_t, pass_tmpfs_t, pass_tmpfs_t)
+manage_files_pattern(pass_t, pass_tmpfs_t, pass_tmpfs_t)
+fs_tmpfs_filetrans(pass_t, pass_tmpfs_t, { dir file })
+
+kernel_list_proc(pass_t)
+
+corecmd_exec_bin(pass_t)
+corecmd_exec_shell(pass_t)
+
+dev_getattr_all(pass_t)
+dev_read_rand(pass_t)
+dev_read_urand(pass_t)
+
+# Clipboard support. Needs to search and pkill for copying to clipboard
+domain_read_all_domains_state(pass_t)
+
+fs_getattr_tmpfs(pass_t)
+
+term_search_ptys(gpg_pinentry_t)
+term_search_ptys(pass_t)
+
+userdom_use_inherited_user_ptys(pass_t)
+
+xserver_stream_connect(pass_t)
+xserver_stream_connect_xdm(pass_t)
+
+auth_read_passwd(pass_t)
+
+gpg_domtrans(pass_t)
+
+# misc staff fixes
+dbus_system_bus_client(staff_gkeyringd_t)
+userdom_stream_connect(staff_gkeyringd_t)
+
+optional_policy(`
+        gpg_role(unconfined_r, unconfined_t)
+')
+
+# Unconventional transition for unconfined. Remove if desired
+optional_policy(`
+	gen_require(`
+		type unconfined_t;
+		role unconfined_r;
+	        type staff_t;
+                role staff_r;
+	')
+
+	pass_role(unconfined_r, unconfined_t)
+	pass_role(staff_r, staff_t)
+')
