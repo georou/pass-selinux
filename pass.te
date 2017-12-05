@@ -8,7 +8,6 @@ policy_module(pass, 1.0.0)
 
 gen_require(`
 	type gpg_pinentry_t;
-	type staff_gkeyringd_t;
 	type unconfined_t;
 	role unconfined_r;
 	type staff_t;
@@ -42,6 +41,7 @@ allow pass_t self:unix_stream_socket { connectto create_stream_socket_perms };
 
 allow pass_t pass_tmp_t:sock_file manage_sock_file_perms;
 allow pass_t pass_tmpfs_t:sock_file manage_sock_file_perms;
+
 dontaudit unconfined_t pass_tmp_t:file read_file_perms;
 dontaudit unconfined_t pass_tmp_t:sock_file read_sock_file_perms;
 dontaudit staff_t pass_tmp_t:file read_file_perms;
@@ -95,10 +95,6 @@ fs_getattr_tmpfs(pass_t)
 term_search_ptys(gpg_pinentry_t)
 term_search_ptys(pass_t)
 
-#unconfined_stream_connect(pass_t)
-#userdom_manage_tmp_dirs(pass_t)
-#userdom_manage_tmp_sockets(pass_t)
-#userdom_stream_connect(pass_t)
 userdom_use_inherited_user_ptys(pass_t)
 
 xserver_stream_connect(pass_t)
@@ -107,11 +103,6 @@ xserver_stream_connect_xdm(pass_t)
 auth_read_passwd(pass_t)
 
 gpg_domtrans(pass_t)
-
-# Misc staff fixes
-dbus_system_bus_client(staff_gkeyringd_t)
-userdom_stream_connect(staff_gkeyringd_t)
-
 
 optional_policy(`
 	gnome_search_gconf(pass_t)
