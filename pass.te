@@ -8,7 +8,6 @@ policy_module(pass, 1.0.0)
 
 gen_require(`
 	type gpg_pinentry_t;
-	type staff_gkeyringd_t;
 	type unconfined_t;
 	role unconfined_r;
 ')
@@ -28,7 +27,7 @@ type pass_tmp_t;
 userdom_user_tmp_file(pass_tmp_t)
 
 type pass_tmpfs_t;
-userdom_user_tmpfs_file(pass_tmpfs_t)
+userdom_user_tmp_file(pass_tmpfs_t)
 
 
 ########################################
@@ -77,10 +76,6 @@ xserver_stream_connect_xdm(pass_t)
 auth_read_passwd(pass_t)
 
 gpg_domtrans(pass_t)
-
-# Misc staff fixes
-dbus_system_bus_client(staff_gkeyringd_t)
-userdom_stream_connect(staff_gkeyringd_t)
 
 # Unconventional transition for unconfined. Remove if desired
 optional_policy(`
