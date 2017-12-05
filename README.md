@@ -10,7 +10,7 @@ The primary goals of this policy module is:
 ### Current state:
 
 * All pass functionality works. Git function is untested
-* unconfined_u is being used in an unconventional way. It is temporary and only intended as a stop gap for not running a user confined. Eg staff_u
+* unconfined_u is being used in an unconventional way. It is only intended as a stop gap for not running a user confined. Eg staff_u. Remove it from the .te if you wish.
 
 
 ## Installation

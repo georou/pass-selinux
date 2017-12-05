@@ -78,10 +78,11 @@ auth_read_passwd(pass_t)
 
 gpg_domtrans(pass_t)
 
-# misc staff fixes
+# Misc staff fixes
 dbus_system_bus_client(staff_gkeyringd_t)
 userdom_stream_connect(staff_gkeyringd_t)
 
+# Unconventional transition for unconfined. Remove if desired
 optional_policy(`
         gpg_role(unconfined_r, unconfined_t)
 ')
